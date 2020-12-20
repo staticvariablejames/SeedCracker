@@ -63,6 +63,10 @@ body {
     background-position: calc(-1*var(--index)*48px) 0px;
 }
 
+.easter-bunny-icon.inactive, .valentines-heart-icon.inactive {
+    display: none;
+}
+
 /* Make all icons have opacity 0.25, hovered icons 0.8, and selected icons 1.0. */
 .outcome-success-icon,
 .outcome-backfire-icon,
@@ -91,10 +95,11 @@ body {
     opacity: 1;
 }
 
+/* Align panels in each outcome frame using a grid */
 .outcome-frame {
     display: grid;
     grid-template-columns: 100px 20ex 400px;
-    align-items: start;
+    align-items: center;
 }
 
 .spells-cast-header {
@@ -115,4 +120,12 @@ body {
 .season-choices {
     grid-row: 2;
     grid-column: 3;
+}
+
+/* Align seasonal icons */
+.seasons {
+    display: flex;
+}
+.seasonal-cookies {
+    display: flex;
 }
