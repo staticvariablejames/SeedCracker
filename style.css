@@ -33,13 +33,6 @@ body {
     background-position: -960px -144px;
 }
 
-.valentines-heart-icon {
-    background-image: url(https://orteil.dashnet.org/cookieclicker/img/hearts.png);
-    /* Another kludge; this sizes here works because hearts.png has a single row of sprites */
-    background-size: auto 100%;
-    width: 48px;
-    height: 48px;
-    background-position: calc(-1*var(--index)*48px) 0px;
 }
 
 .easter-bunny-icon {
@@ -49,6 +42,15 @@ body {
     width: 48px;
     height: 48px;
     background-position: calc(-1*var(--index)*48px) calc(-1*var(--wrath, 0)*48px);
+}
+
+.valentines-heart-icon {
+    background-image: url(https://orteil.dashnet.org/cookieclicker/img/hearts.png);
+    /* Another kludge; this sizes here works because hearts.png has a single row of sprites */
+    background-size: auto 100%;
+    width: 48px;
+    height: 48px;
+    background-position: calc(-1*var(--index)*48px) 0px;
 }
 
 .outcome-frame {
