@@ -14,10 +14,6 @@ body {
     height: 96px;
 }
 
-.gc-effect.selected {
-    font-weight: bold;
-}
-
 .easter-season-icon, .valentines-season-icon {
     background-image: url(https://orteil.dashnet.org/cookieclicker/img/icons.png);
     width: 96px;
@@ -33,6 +29,20 @@ body {
     background-position: -960px -144px;
 }
 
+.gc-effect {
+    cursor: default;
+}
+
+.gc-effect.selected {
+    font-weight: bold;
+}
+
+.gc-effect.inactive {
+    display: none;
+}
+
+.gc-effect:hover {
+    color: white;
 }
 
 .easter-bunny-icon {
@@ -51,6 +61,34 @@ body {
     width: 48px;
     height: 48px;
     background-position: calc(-1*var(--index)*48px) 0px;
+}
+
+/* Make all icons have opacity 0.25, hovered icons 0.8, and selected icons 1.0. */
+.outcome-success-icon,
+.outcome-backfire-icon,
+.easter-season-icon,
+.valentines-season-icon,
+.easter-bunny-icon,
+.valentines-heart-icon {
+    opacity: 0.25;
+}
+
+.outcome-success-icon:hover,
+.outcome-backfire-icon:hover,
+.easter-season-icon:hover,
+.valentines-season-icon:hover,
+.easter-bunny-icon:hover,
+.valentines-heart-icon:hover {
+    opacity: 0.8;
+}
+
+.outcome-success-icon.selected,
+.outcome-backfire-icon.selected,
+.easter-season-icon.selected,
+.valentines-season-icon.selected,
+.easter-bunny-icon.selected,
+.valentines-heart-icon.selected {
+    opacity: 1;
 }
 
 .outcome-frame {
