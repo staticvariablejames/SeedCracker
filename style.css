@@ -1,3 +1,7 @@
+body {
+    background-color: gray;
+}
+
 .outcome-success-icon {
     background-image: url(https://orteil.dashnet.org/cookieclicker/img/goldCookie.png);
     width: 96px;
@@ -45,4 +49,30 @@
     width: 48px;
     height: 48px;
     background-position: calc(-1*var(--index)*48px) calc(-1*var(--wrath, 0)*48px);
+}
+
+.outcome-frame {
+    display: grid;
+    grid-template-columns: 100px 20ex 400px;
+    align-items: start;
+}
+
+.spells-cast-header {
+    grid-row: 1;
+    grid-column: 1 / 4;
+}
+
+.outcome-success-backfire-selector {
+    grid-row: 2;
+    grid-column: 1;
+}
+
+.gc-effect-list {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.season-choices {
+    grid-row: 2;
+    grid-column: 3;
 }
