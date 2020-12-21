@@ -105,9 +105,38 @@ body {
 
 /* Align panels in each outcome frame using a grid */
 .outcome-frame {
+    background-color: #222;
+    color: #aaa;
     display: grid;
     grid-template-columns: 100px 20ex 400px;
     align-items: center;
+
+    /* Recreate CC's ridge-like thing with CCS alone */
+    position: relative;
+    padding: 5px;
+    border-top: 2px solid #ece2b6; /* External colors */
+    border-left: 2px solid #dfbc9a;
+    border-right: 2px solid #875626;
+    border-bottom: 2px solid #733726;
+}
+.outcome-frame:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border-top: 1px solid #998a4d; /* Internal colors */
+    border-left: 1px solid #875626;
+    border-right: 1px solid #dfbc9a;
+    border-bottom: 1px solid #dfbc9a;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.outcome-frame input {
+    width: 15ex;
+    color: #aaa;
+    border: 1px solid #666;
+    background-color: #222;
 }
 
 .spells-cast-header {
