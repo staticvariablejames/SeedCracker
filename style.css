@@ -1,5 +1,6 @@
 body {
-    background-color: lightblue;
+    background-color: #333;
+    color: #ccc;
 }
 
 .outcome-success-icon {
@@ -30,11 +31,14 @@ body {
 }
 
 .gc-effect {
+    color: #888;
+    height: 2ex;
     cursor: default;
 }
 
 .gc-effect.selected {
     font-weight: bold;
+    color: white;
 }
 
 .gc-effect.inactive {
@@ -42,7 +46,7 @@ body {
 }
 
 .gc-effect:hover {
-    color: white;
+    font-weight: bold;
 }
 
 .easter-bunny-icon {
@@ -100,7 +104,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(500px + 20ex + 50px)
+    width: calc(500px + 15em + 50px);
+    /* 500px+15em is the width of outcome-frame */
+}
+#outcome-list>div {
+    margin: 5px;
 }
 
 /* Align panels in each outcome frame using a grid */
@@ -108,7 +116,10 @@ body {
     background-color: #222;
     color: #aaa;
     display: grid;
-    grid-template-columns: 100px 20ex 400px;
+    grid-template-columns: 100px 15em 400px;
+    /* 100px is a bit over 96px,
+     * 15em should be enough to write "cookie storm drop",
+     * 400px is a little over 8*48px. */
     align-items: center;
 
     /* Recreate CC's ridge-like thing with CCS alone */
@@ -139,6 +150,10 @@ body {
     background-color: #222;
 }
 
+.outcome-frame div {
+    margin: 5px;
+}
+
 .spells-cast-header {
     grid-row: 1;
     grid-column: 1 / 4;
@@ -159,6 +174,10 @@ body {
     grid-column: 3;
 }
 
+.season-choices div {
+    margin: 0px;
+}
+
 /* Align seasonal icons */
 .seasons {
     display: flex;
@@ -170,13 +189,16 @@ body {
 /* Settings about the new-outcome-button */
 #new-outcome-button {
     align-self: stretch; /* with respect to #outcome-list */
+
     border: dashed red;
     border-radius: 30px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
+
     cursor: default;
-    padding-bottom: 15px;
+    padding-bottom: 15px; /* The "+" is big enough at the top */
 }
 
 #new-outcome-button:hover {
