@@ -52,6 +52,10 @@ class FtHoFOutcome {
 /* Instruments and manages an outcome frame in the user interface.
  */
 class FtHoFOutcomeFrame {
+    private static template = document
+        .querySelector<HTMLTemplateElement>('#outcome-frame-template')!
+        .content
+        .querySelector<HTMLDivElement>('.outcome-frame')!;
     private div: HTMLDivElement;
     private successIcon: HTMLDivElement;
     private backfireIcon: HTMLDivElement;
@@ -66,7 +70,7 @@ class FtHoFOutcomeFrame {
     private outcome: FtHoFOutcome = new FtHoFOutcome();
 
     constructor() {
-        this.div = document.querySelector('.outcome-frame') as HTMLDivElement;
+        this.div = FtHoFOutcomeFrame.template.cloneNode(true) as HTMLDivElement;
 
         this.successIcon = this.div.querySelector('.outcome-success-icon') as HTMLDivElement;
         this.backfireIcon = this.div.querySelector('.outcome-backfire-icon') as HTMLDivElement;
@@ -100,6 +104,10 @@ class FtHoFOutcomeFrame {
 
     public getOutcome() {
         return this.outcome;
+    }
+
+    public getDiv() {
+        return this.div;
     }
 
     private showGCOutcomes(list: GCOutcome[]) {
@@ -226,4 +234,26 @@ class FtHoFOutcomeFrame {
     }
 }
 
-let frameHandler = new FtHoFOutcomeFrame();
+/* Manages the outcome list and the button to add elements to it.
+ */
+class OutcomeList {
+    private outcomeFrames: FtHoFOutcomeFrame[] = [];
+
+    private buttonDiv = document.getElementById('new-outcome-button') as HTMLDivElement;
+    private listDiv = document.getElementById('outcome-list') as HTMLDivElement;
+
+    private constructor() {
+        this.addHandlers();
+    }
+
+    private addHandlers() {
+        this.buttonDiv.addEventListener('click', () => {
+            let frame = new FtHoFOutcomeFrame();
+            this.outcomeFrames.push(frame);
+            this.listDiv.insertBefore(frame.getDiv(), this.buttonDiv);
+        });
+        this.buttonDiv.click();
+    }
+
+    static instance = new OutcomeList();
+}

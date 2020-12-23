@@ -7,11 +7,11 @@
     <script src="dist/seed.js" defer></script>
 </head>
 <body>
-    <div id="outcome-list">
+    <template id="outcome-frame-template">
         <div class="outcome-frame">
             <div class="spells-cast-header">
                 Total spells cast before casting FtHoF:
-                <input type="number" id="spells-cast-counter" step="1" min="0" />
+                <input type="number" id="spells-cast-counter" step="1" min="0" value="0" />
             </div>
             <div class="outcome-success-backfire-selector">
                 <div class="outcome-success-icon selected"></div>
@@ -34,7 +34,7 @@
             </div>
             <div class="season-choices">
                 <div class="seasons">
-                    <div class="easter-season-icon selected"></div>
+                    <div class="easter-season-icon"></div>
                     <div class="valentines-season-icon"></div>
                 </div>
                 <div class="seasonal-cookies">
@@ -42,10 +42,10 @@
                     <div class="easter-bunny-icon" style="--index: 1;"></div>
                     <div class="easter-bunny-icon" style="--index: 2;"></div>
                     <div class="easter-bunny-icon" style="--index: 3;"></div>
-                    <div class="easter-bunny-icon" style="--index: 0; --wrath: 1;"></div>
-                    <div class="easter-bunny-icon" style="--index: 1; --wrath: 1;"></div>
-                    <div class="easter-bunny-icon" style="--index: 2; --wrath: 1;"></div>
-                    <div class="easter-bunny-icon" style="--index: 3; --wrath: 1;"></div>
+                    <div class="easter-bunny-icon inactive" style="--index: 0; --wrath: 1;"></div>
+                    <div class="easter-bunny-icon inactive" style="--index: 1; --wrath: 1;"></div>
+                    <div class="easter-bunny-icon inactive" style="--index: 2; --wrath: 1;"></div>
+                    <div class="easter-bunny-icon inactive" style="--index: 3; --wrath: 1;"></div>
                     <div class="valentines-heart-icon inactive" style="--index: 0;"></div>
                     <div class="valentines-heart-icon inactive" style="--index: 1;"></div>
                     <div class="valentines-heart-icon inactive" style="--index: 2;"></div>
@@ -57,6 +57,9 @@
                 </div>
             </div>
         </div>
+    </template>
+
+    <div id="outcome-list">
         <div id="new-outcome-button">
             <div class="big-plus-icon">+</div>
             <div>Add a new FtHoF outcome</div>
