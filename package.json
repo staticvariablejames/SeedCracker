@@ -1,0 +1,11 @@
+{
+  "name": "ccseedcracker",
+  "version": "0.1.0",
+  "description": "External tool to extract Cookie Clicker's Game.seed",
+  "main": "dist/seed.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Static Variable James",
+  "license": "GPL-3.0-or-later"
+}
