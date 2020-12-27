@@ -1,4 +1,4 @@
-import FtHoFOutcomeFrame from './fthof-outcome-frame.js';
+import FtHoFOutcomeFrame from './fthof-outcome-frame';
 
 /* Manages the outcome list and the button to add elements to it.
  */

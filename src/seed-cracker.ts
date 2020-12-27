@@ -1,4 +1,4 @@
-import FtHoFOutcome from './fthof-outcome.js';
+import FtHoFOutcome from './fthof-outcome';
 
 export default function crackSeed(list: FtHoFOutcome[]) {
     // TODO: actually implement this

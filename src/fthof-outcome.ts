@@ -1,4 +1,4 @@
-import GCOutcome from './gcoutcome.js';
+import GCOutcome from './gcoutcome';
 
 /* Represents an outcome from a FtHoF cast.
  * seasonalVariantIndex the shape of the golden cookie during a season;

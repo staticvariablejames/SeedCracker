@@ -1,1 +1,1 @@
-import './crack-seed-button.js';
+import './crack-seed-button';

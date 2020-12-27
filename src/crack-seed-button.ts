@@ -1,5 +1,5 @@
-import crackSeed from './seed-cracker.js';
-import OutcomeList from './outcome-list.js';
+import crackSeed from './seed-cracker';
+import OutcomeList from './outcome-list';
 
 export class CrackSeedButton {
     static instance = new CrackSeedButton();

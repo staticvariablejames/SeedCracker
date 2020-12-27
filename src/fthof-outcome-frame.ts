@@ -1,5 +1,5 @@
-import { GCOutcome, SuccessGCOutcomes, BackfireGCOutcomes, AllGCOutcomes } from './gcoutcome.js';
-import FtHoFOutcome from './fthof-outcome.js';
+import { GCOutcome, SuccessGCOutcomes, BackfireGCOutcomes, AllGCOutcomes } from './gcoutcome';
+import FtHoFOutcome from './fthof-outcome';
 
 /* Instruments and manages an outcome frame in the user interface.
  */
