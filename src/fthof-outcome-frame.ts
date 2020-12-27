@@ -1,9 +1,9 @@
 import { GCOutcome, SuccessGCOutcomes, BackfireGCOutcomes, AllGCOutcomes } from './gcoutcome';
-import FtHoFOutcome from './fthof-outcome';
+import { FtHoFOutcome } from './fthof-outcome';
 
 /* Instruments and manages an outcome frame in the user interface.
  */
-export default class FtHoFOutcomeFrame {
+export class FtHoFOutcomeFrame {
     private static template = document
         .querySelector<HTMLTemplateElement>('#outcome-frame-template')!
         .content

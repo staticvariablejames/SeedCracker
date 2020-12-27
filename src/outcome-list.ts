@@ -1,8 +1,8 @@
-import FtHoFOutcomeFrame from './fthof-outcome-frame';
+import { FtHoFOutcomeFrame } from './fthof-outcome-frame';
 
 /* Manages the outcome list and the button to add elements to it.
  */
-export default class OutcomeList {
+export class OutcomeList {
     private outcomeFrames: FtHoFOutcomeFrame[] = [];
 
     private buttonDiv = document.getElementById('new-outcome-button') as HTMLDivElement;

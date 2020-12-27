@@ -1,10 +1,10 @@
-import GCOutcome from './gcoutcome';
+import { GCOutcome } from './gcoutcome';
 
 /* Represents an outcome from a FtHoF cast.
  * seasonalVariantIndex the shape of the golden cookie during a season;
  * may be 'undefined' (if season == '', or if the player did not paid attention to it).
  */
-export default class FtHoFOutcome {
+export class FtHoFOutcome {
     gcOutcome: GCOutcome = GCOutcome.Frenzy;
     backfire: boolean = false;
     spellsCast: number = 0;

@@ -13,7 +13,6 @@ export enum GCOutcome { // Golden Cookie outcome
     ElderFrenzy,
     // These are in the same order that they show up in the HTML file
 };
-export default GCOutcome;
 
 export const SuccessGCOutcomes = [
     GCOutcome.Frenzy,
