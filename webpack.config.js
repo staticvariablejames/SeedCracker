@@ -10,6 +10,7 @@ module.exports = {
     devtool: 'eval-source-map',
     devServer: {
         publicPath: '/dist/',
+        watchContentBase: true,
     },
     module: {
         rules: [
