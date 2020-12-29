@@ -26,6 +26,7 @@ export const SuccessGCOutcomes = [
 ];
 
 export const BackfireGCOutcomes = [
+    GCOutcome.Blab,
     GCOutcome.Sweet,
     GCOutcome.Clot,
     GCOutcome.Ruin,
