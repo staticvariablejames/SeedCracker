@@ -9,5 +9,5 @@ export class FtHoFOutcome {
     backfire: boolean = false;
     spellsCast: number = 0;
     season: '' | 'easter' | 'valentines' = '';
-    seasonalVariantIndex: number | undefined = 0;
+    seasonalVariantIndex: number | undefined = undefined;
 };
