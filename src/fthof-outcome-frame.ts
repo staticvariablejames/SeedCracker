@@ -9,6 +9,9 @@ export class FtHoFOutcomeFrame {
         .content
         .querySelector<HTMLDivElement>('.outcome-frame')!;
     private div: HTMLDivElement;
+
+    private spellsCastCounter: HTMLInputElement;
+
     private successIcon: HTMLDivElement;
     private backfireIcon: HTMLDivElement;
     private gcOutcomeDivs: HTMLDivElement[];
@@ -23,6 +26,8 @@ export class FtHoFOutcomeFrame {
 
     constructor() {
         this.div = FtHoFOutcomeFrame.template.cloneNode(true) as HTMLDivElement;
+
+        this.spellsCastCounter = this.div.querySelector('.spells-cast-counter') as HTMLInputElement;
 
         this.successIcon = this.div.querySelector('.outcome-success-icon') as HTMLDivElement;
         this.backfireIcon = this.div.querySelector('.outcome-backfire-icon') as HTMLDivElement;
@@ -113,6 +118,10 @@ export class FtHoFOutcomeFrame {
     }
 
     private addHandlers() {
+        this.spellsCastCounter.addEventListener('input', () => {
+            this.outcome.spellsCast = this.spellsCastCounter.valueAsNumber;
+        });
+
         this.successIcon.addEventListener('click', () => {
             this.successIcon.classList.add('selected');
             this.backfireIcon.classList.remove('selected');
