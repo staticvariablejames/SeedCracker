@@ -208,3 +208,7 @@ body {
 .big-plus-icon {
     font-size: 100px;
 }
+
+.cracking-result-frame {
+    display:flex;
+}
