@@ -3,6 +3,32 @@ body {
     color: #ccc;
 }
 
+/* "Frames" are just rectangles that have a ridge-like border,
+ * with the same colors as Cookie Clicker's frameBorder.png.
+ */
+.frame {
+    background-color: #222;
+    color: #aaa;
+
+    position: relative;
+    border-top: 2px solid #ece2b6; /* External colors */
+    border-left: 2px solid #dfbc9a;
+    border-right: 2px solid #875626;
+    border-bottom: 2px solid #733726;
+}
+.frame:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border-top: 1px solid #998a4d; /* Internal colors */
+    border-left: 1px solid #875626;
+    border-right: 1px solid #dfbc9a;
+    border-bottom: 1px solid #dfbc9a;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
 .outcome-success-icon {
     background-image: url(https://orteil.dashnet.org/cookieclicker/img/goldCookie.png);
     width: 96px;
@@ -113,34 +139,13 @@ body {
 
 /* Align panels in each outcome frame using a grid */
 .outcome-frame {
-    background-color: #222;
-    color: #aaa;
+    padding: 5px;
     display: grid;
     grid-template-columns: 100px 15em 400px;
     /* 100px is a bit over 96px,
      * 15em should be enough to write "cookie storm drop",
      * 400px is a little over 8*48px. */
     align-items: center;
-
-    /* Recreate CC's ridge-like thing with CCS alone */
-    position: relative;
-    padding: 5px;
-    border-top: 2px solid #ece2b6; /* External colors */
-    border-left: 2px solid #dfbc9a;
-    border-right: 2px solid #875626;
-    border-bottom: 2px solid #733726;
-}
-.outcome-frame:before {
-    content: "";
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    border-top: 1px solid #998a4d; /* Internal colors */
-    border-left: 1px solid #875626;
-    border-right: 1px solid #dfbc9a;
-    border-bottom: 1px solid #dfbc9a;
-    box-sizing: border-box;
-    pointer-events: none;
 }
 
 .outcome-frame input {
