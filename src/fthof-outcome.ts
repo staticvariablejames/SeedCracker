@@ -10,4 +10,13 @@ export class FtHoFOutcome {
     spellsCast: number = 0;
     season: '' | 'easter' | 'valentines' = '';
     seasonalVariantIndex: number | undefined = undefined;
+
+    equals(rhs: any) {
+        if(!(rhs instanceof FtHoFOutcome)) return false;
+        return this.gcOutcome == rhs.gcOutcome &&
+            this.backfire == rhs.backfire &&
+            this.spellsCast == rhs.spellsCast &&
+            this.season == rhs.season &&
+            this.seasonalVariantIndex == rhs.seasonalVariantIndex;
+    }
 };
