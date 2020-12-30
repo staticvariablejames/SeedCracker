@@ -216,4 +216,12 @@ body {
 
 .cracking-result-frame {
     display:flex;
+    align-items: center;
+    width: 100%;
+}
+.cracking-result-frame button {
+    margin: 5px;
+}
+.cracking-result-frame div {
+    margin: 5px;
 }
