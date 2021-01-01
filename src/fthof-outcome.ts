@@ -13,10 +13,12 @@ export class FtHoFOutcome {
 
     equals(rhs: any) {
         if(!(rhs instanceof FtHoFOutcome)) return false;
-        return this.gcOutcome == rhs.gcOutcome &&
-            this.backfire == rhs.backfire &&
-            this.spellsCast == rhs.spellsCast &&
-            this.season == rhs.season &&
-            this.seasonalVariantIndex == rhs.seasonalVariantIndex;
+        if(this.gcOutcome !== rhs.gcOutcome) return false;
+        if(this.backfire !== rhs.backfire) return false;
+        if(this.spellsCast !== rhs.spellsCast) return false;
+        if(this.season !== rhs.season) return false;
+        if(this.season !== ''
+            && this.seasonalVariantIndex !== rhs.seasonalVariantIndex) return false;
+        return true;
     }
 };
