@@ -1,4 +1,4 @@
-/* Iterates through every possible seed ('aaaaa' through 'zzzzz') in order,
+/* Iterates through every possible seed ('aaaaa' through 'zzzzz') in lexicographical order,
  * using little memory.
  */
 export class SeedIterator {
@@ -30,7 +30,12 @@ export class SeedIterator {
             return { value: this.current(), done: false };
         }
     }
-    rewind() { // Assumes rewinding is possible
+
+    /* Steps the iterator back a single step.
+     * Rewinding is not possible before the first next() call
+     * or after iteration has finished.
+     */
+    rewind() {
         this.currentIndex--;
         let i = SeedIterator.n-1;
         while(i>=0 && this.state[i] == SeedIterator.a) {
