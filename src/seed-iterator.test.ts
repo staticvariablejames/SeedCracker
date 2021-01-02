@@ -1,5 +1,24 @@
 import { SeedIterator } from './seed-iterator';
 
+test('SeedIterator.indexToSeed works', () => {
+    expect(SeedIterator.indexToSeed(0, 1)).toEqual('a');
+    expect(SeedIterator.indexToSeed(1, 1)).toEqual('b');
+    expect(SeedIterator.indexToSeed(0, 2)).toEqual('aa');
+    expect(SeedIterator.indexToSeed(1, 2)).toEqual('ab');
+    expect(SeedIterator.indexToSeed(28, 3)).toEqual('abc');
+    expect(SeedIterator.indexToSeed(26**5-1, 5)).toEqual('zzzzz');
+
+    // Default second argument
+    expect(SeedIterator.indexToSeed(0)).toEqual('aaaaa');
+    expect(SeedIterator.indexToSeed(1)).toEqual('aaaab');
+    expect(SeedIterator.indexToSeed(26**5-1)).toEqual('zzzzz');
+
+    // Wrap-around behavior
+    expect(SeedIterator.indexToSeed(26**2, 2)).toEqual('aa');
+    expect(SeedIterator.indexToSeed(10*26**2 + 28, 2)).toEqual('bc');
+    expect(SeedIterator.indexToSeed(123456789)).toEqual('keekb');
+});
+
 test('Simple seed iteration works', () => {
     let i = new SeedIterator();
     expect(i.next()).toEqual({value: 'aaaaa', done: false});

@@ -7,6 +7,19 @@ export class SeedIterator {
     static readonly z = 'z'.charCodeAt(0);
     state: number[] = [];
 
+    /* Converts a numerical index to the corresponding seed value.
+     * For example, indexToSeed(28, 5) == 'aaabc'.
+     * The seed wraps around, so indexToSeed(26*26, 2) == 'aa'.
+     */
+    static indexToSeed(index: number, n: number = SeedIterator.n) {
+        let seed = '';
+        for(let i = 0; i < n; i++) {
+            seed = String.fromCharCode((index % 26) + SeedIterator.a) + seed;
+            index = Math.floor(index/26);
+        }
+        return seed;
+    }
+
     private currentIndex: number = 0; // Incremented on each .next()
     index() { return this.currentIndex; }
 
