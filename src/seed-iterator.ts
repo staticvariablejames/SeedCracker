@@ -1,7 +1,17 @@
-/* Iterates through every possible seed ('aaaaa' through 'zzzzz') in lexicographical order,
- * using little memory.
- */
 export class SeedIterator {
+    /* Constructs a seed iterator that will iterate over all seeds between 'aaaaa' and 'zzzzz'
+     * (inclusive),
+     * in lexicographical order.
+     *
+     * If begin and end are provided,
+     * the iteration range is changed to [begin, end).
+     * For example, SeedIterator(2, 5) will iterate through 'aaaac', 'aaaad' and 'aaaae'.
+     */
+    constructor(begin: number = 0, end: number = 26 ** SeedIterator.n) {
+        this.currentIndex = begin;
+        this.end = end;
+    }
+
     static readonly n = 5;
     static readonly a = 'a'.charCodeAt(0);
     static readonly z = 'z'.charCodeAt(0);
@@ -24,13 +34,7 @@ export class SeedIterator {
     private currentIndex: number;
     index() { return this.currentIndex; }
 
-    constructor(begin: number = 0, end: number = 26 ** SeedIterator.n ) {
-        this.currentIndex = begin;
-        this.end = end;
-    }
-
-    next(): {value: string, done: false} | {value: undefined, done: true}
-    {
+    next(): {value: string, done: false} | {value: undefined, done: true} {
         if(this.currentIndex == this.end) {
             return { value: undefined, done: true };
         } else {
