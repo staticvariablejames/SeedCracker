@@ -4,7 +4,8 @@
   "description": "External tool to extract Cookie Clicker's Game.seed",
   "main": "dist/seed.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --testNamePattern='^(?!.*\\[SLOW\\]).*$'",
+    "test:all": "jest"
   },
   "author": "Static Variable James",
   "license": "GPL-3.0-or-later",
