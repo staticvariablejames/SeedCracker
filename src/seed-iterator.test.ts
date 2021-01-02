@@ -67,3 +67,37 @@ test('Adjustable seed iteration bounds works', () => {
     expect(i.next()).toEqual({value: 'aaaaa', done: false});
     expect(i.next()).toEqual({value: undefined, done: true});
 });
+
+test('SeedIterator.rangePartition works', () => {
+    let i = SeedIterator.rangePartition(26**4, 0);
+    expect(i.next()).toEqual({value: 'aaaaa', done: false});
+    for(let j = 0; j < 24; j++) i.next();
+    expect(i.next()).toEqual({value: 'aaaaz', done: false});
+    expect(i.index()).toEqual(26);
+    expect(i.next()).toEqual({value: undefined, done: true});
+
+    i = SeedIterator.rangePartition(26**4, 1);
+    expect(i.index()).toEqual(26); // Non-overlapping ranges
+
+    // Uneven intervals
+    i = SeedIterator.rangePartition(1e6, 0);
+    for(let j = 0; j < 10; j++) i.next();
+    expect(i.next()).toEqual({value: 'aaaak', done: false});
+    expect(i.index()).toEqual(11);
+    expect(i.next()).toEqual({value: undefined, done: true});
+
+    i = SeedIterator.rangePartition(1e6, 1);
+    expect(i.index()).toEqual(11);
+
+    // The final range works
+    i = SeedIterator.rangePartition(26**4, 26**4 - 1);
+    for(let j = 0; j < 25; j++) i.next();
+    expect(i.next()).toEqual({value: 'zzzzz', done: false});
+    expect(i.next()).toEqual({value: undefined, done: true});
+
+    // Final range with uneven intervals
+    i = SeedIterator.rangePartition(1e6, 1e6-1); // Uneven intervals
+    for(let j = 0; j < 11; j++) i.next();
+    expect(i.next()).toEqual({value: 'zzzzz', done: false});
+    expect(i.next()).toEqual({value: undefined, done: true});
+});

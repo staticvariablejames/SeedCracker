@@ -12,6 +12,31 @@ export class SeedIterator {
         this.end = end;
     }
 
+    /* Partitions the range ['aaaaa', 'zzzzz'] and returns an iterator for each part.
+     *
+     * More specifically, if
+     *  i1 = rangePartition(n, 0);
+     *  i2 = rangePartition(n, 1);
+     *  ...
+     *  in = rangePartition(n, n-1);
+     * then each iterator will iterate through a subrange of the seed space ['aaaaa', 'zzzzz'],
+     * without missing or overlapping.
+     *
+     * The parts have roughly the same size.
+     * partCount and part are assumed to be integers and 0 <= part < partCount.
+     *
+     * Note that each call to rangePartition is independent.
+     */
+    static rangePartition(partCount: number, part: number) {
+        let step = (26 ** SeedIterator.n) / partCount;
+        if(part == partCount - 1) {
+            // Sidestep floating-point errors
+            return new SeedIterator( Math.floor(part * step) );
+        } else {
+            return new SeedIterator( Math.floor(part * step), Math.floor((part+1) * step) );
+        }
+    }
+
     static readonly n = 5;
     static readonly a = 'a'.charCodeAt(0);
     static readonly z = 'z'.charCodeAt(0);
