@@ -6,9 +6,11 @@ export class SeedIterator {
     static readonly a = 'a'.charCodeAt(0);
     static readonly z = 'z'.charCodeAt(0);
     state: number[] = [];
-    currentIndex: number = 0; // Incremented on each .next()
 
-    current() {
+    private currentIndex: number = 0; // Incremented on each .next()
+    index() { return this.currentIndex; }
+
+    private current() {
         return this.state.map( c => String.fromCharCode(c) ).join('');
     }
     next(): {value: string, done: false} | {value: undefined, done: true}

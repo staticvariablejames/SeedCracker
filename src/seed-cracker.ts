@@ -126,7 +126,7 @@ export class SeedCracker {
                 }
             }
         }
-        this.callback.notifyProgress( this.iterator.currentIndex / (26**SeedIterator.n) );
+        this.callback.notifyProgress( this.iterator.index() / (26**SeedIterator.n) );
         this.scheduleWork();
     }
 }
