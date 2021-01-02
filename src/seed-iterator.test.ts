@@ -47,3 +47,23 @@ test('Seed iteration halts after 26**5 seeds [SLOW]', () => {
     expect(i.next()).toEqual({value: 'zzzzz', done: false});
     expect(i.next()).toEqual({value: undefined, done: true});
 });
+
+test('Adjustable seed iteration bounds works', () => {
+    let i = new SeedIterator(2, 5);
+    expect(i.next()).toEqual({value: 'aaaac', done: false});
+    expect(i.next()).toEqual({value: 'aaaad', done: false});
+    expect(i.next()).toEqual({value: 'aaaae', done: false});
+    expect(i.next()).toEqual({value: undefined, done: true});
+
+    i = new SeedIterator(0, 1);
+    expect(i.next()).toEqual({value: 'aaaaa', done: false});
+    expect(i.next()).toEqual({value: undefined, done: true});
+
+    i = new SeedIterator(0, 0);
+    expect(i.next()).toEqual({value: undefined, done: true});
+
+    i = new SeedIterator(26**5-1, 26**5+1);
+    expect(i.next()).toEqual({value: 'zzzzz', done: false});
+    expect(i.next()).toEqual({value: 'aaaaa', done: false});
+    expect(i.next()).toEqual({value: undefined, done: true});
+});
