@@ -4,7 +4,7 @@ import seedrandom from 'seedrandom';
 
 export function isCompatible(outcome: FtHoFOutcome, seed: string) {
     let prng = seedrandom(seed + '/' + outcome.spellsCast);
-    if( (prng() < 0.15) != outcome.backfire )
+    if( (prng() < 0.85) == outcome.backfire )
         return false;
 
     // Generate the golden cookie
