@@ -5,7 +5,8 @@
   "main": "dist/seed.js",
   "scripts": {
     "test": "jest --testNamePattern='^(?!.*\\[SLOW\\]).*$'",
-    "test:all": "jest"
+    "test:all": "jest",
+    "test:debug": "node --nolazy --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --verbose --colors"
   },
   "author": "Static Variable James",
   "license": "GPL-3.0-or-later",
