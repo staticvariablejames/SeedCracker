@@ -28,11 +28,11 @@ export function isCompatible(outcome: FtHoFOutcome, seed: string) {
 
     if(!outcome.backfire) {
         gcChoices.push(GCOutcome.Frenzy, GCOutcome.Lucky);
-        gcChoices.push(GCOutcome.ClickFrenzy);
+        gcChoices.push(GCOutcome.ClickFrenzy); // We assume no dragonflight
         if(prng() < 0.1) gcChoices.push(
             GCOutcome.CookieStorm, GCOutcome.CookieStorm, GCOutcome.Blab
         );
-        if(prng() < 0.25) gcChoices.push(GCOutcome.BuildingSpecial);
+        if(prng() < 0.25) gcChoices.push(GCOutcome.BuildingSpecial); // We assume >= 10 buildings
         if(prng() < 0.15) gcChoices=[GCOutcome.CookieStormDrop];
         if(prng() < 0.0001) gcChoices.push(GCOutcome.Sweet);
     } else {

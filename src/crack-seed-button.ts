@@ -17,6 +17,9 @@ export class CrackSeedButton implements SeedCrackerCallback {
         this.div.textContent = `Something went wrong,
             no viable seed found...
             Double-check that the sequence of casts is correct,
+            cast FtHoF only when there are no on-screen golden cookies,
+            do not have Dragonflight active,
+            make sure you own at least 10 buildings,
             reload the page, and try again.`;
     }
     notifySuccess(seed: string) {
