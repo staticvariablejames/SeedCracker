@@ -5,11 +5,14 @@ import { GCOutcome } from './gcoutcome';
  * may be 'undefined' (if season == '', or if the player did not paid attention to it).
  */
 export class FtHoFOutcome {
-    gcOutcome: GCOutcome = GCOutcome.Frenzy;
-    backfire: boolean = false;
-    spellsCast: number = 0;
-    season: '' | 'easter' | 'valentines' = '';
-    seasonalVariantIndex: number | undefined = undefined;
+    constructor(
+        public gcOutcome: GCOutcome = GCOutcome.Frenzy,
+        public backfire: boolean = false,
+        public spellsCast: number = 0,
+        public season: '' | 'easter' | 'valentines' = '',
+        public seasonalVariantIndex: number | undefined = undefined
+    ) {
+    }
 
     equals(rhs: any) {
         if(!(rhs instanceof FtHoFOutcome)) return false;
