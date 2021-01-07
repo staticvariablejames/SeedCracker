@@ -101,3 +101,19 @@ test('SeedIterator.rangePartition works', () => {
     expect(i.next()).toEqual({value: 'zzzzz', done: false});
     expect(i.next()).toEqual({value: undefined, done: true});
 });
+
+test('SeedIterator.progress works', () => {
+    let i = new SeedIterator();
+    expect(i.progress()).toBeCloseTo(0, 10);
+    i.next();
+    expect(i.progress()).toBeCloseTo(1/26**5, 10);
+
+    i = new SeedIterator(50, 55);
+    expect(i.progress()).toBeCloseTo(0, 10);
+    i.next();
+    expect(i.progress()).toBeCloseTo(0.2, 10);
+    i.next(); i.next(); i.next();
+    expect(i.progress()).toBeCloseTo(0.8, 10);
+    i.next();
+    expect(i.progress()).toBeCloseTo(1, 10);
+});

@@ -8,7 +8,7 @@ export class SeedIterator {
      * For example, SeedIterator(2, 5) will iterate through 'aaaac', 'aaaad' and 'aaaae'.
      */
     constructor(begin: number = 0, end: number = 26 ** SeedIterator.n) {
-        this.currentIndex = begin;
+        this.begin = this.currentIndex = begin;
         this.end = end;
     }
 
@@ -54,10 +54,14 @@ export class SeedIterator {
         return seed;
     }
 
-    // The last value to be iterated
+    private begin: number;
     private end: number;
     private currentIndex: number;
+
     index() { return this.currentIndex; }
+
+    // Fraction of the seed space that was already iterated through.
+    progress() { return (this.currentIndex - this.begin)/(this.end - this.begin); }
 
     next(): {value: string, done: false} | {value: undefined, done: true} {
         if(this.currentIndex == this.end) {
