@@ -1,3 +1,37 @@
+/* This class encapsulates the behavior of a worker thread for seed cracking.
+ *
+ * The SeedCracker class manages a number of SeedCrackerLimbs;
+ * that class dispatches FtHoFOutcome[] to the limbs,
+ * who then test all seeds in its own partition to search for compatible seeds
+ * and report the results to SeedCracker.
+ *
+ * The (minimal) web worker code is implemented in seed-cracker.worker.ts;
+ * the only thing the web worker does is transfer messages to and from the limb.
+ * This separation helps with testing.
+ *
+ * Upon creation, the limb expects a "constructor message"
+ * with type { partCount: number, part: number }.
+ * The semantics are the same as in SeedIterator.rangePartition.
+ *
+ * Afterwards, the limb expects only messages containing FtHoFOutcome arrays.
+ * Once such an array arrives,
+ * the limb iterates through all seeds in its partition,
+ * looking for seeds which are compatible with the outcome array.
+ * Should any matching seed be found, the seed itself is immediately sent back in a message.
+ * If two matching seeds are found,
+ * the limb sends the second seed, too, and halts computation.
+ * If the search finishes,
+ * the string "done" is sent as a message.
+ * This message is sent if either one or no compatible seeds are found.
+ *
+ * The limb periodically sends a "progress message":
+ * a number between 0 and 1 representing the completion percentage.
+ *
+ * If a new message arrives before the limb messages "done",
+ * it will immediately halts the processing of the current list of outcomes,
+ * but it is still possible for an outcome to be reported before the message arrives,
+ * so SeedCracker should still filter incoming seed candidates.
+ */
 import { FtHoFOutcome } from './fthof-outcome';
 import { isCompatibleWithAll } from './seed-outcome-compatibility';
 import { SeedIterator } from './seed-iterator';
@@ -25,10 +59,33 @@ export class SeedCrackerLimb {
     private outcomes: FtHoFOutcome[] = [];
     private sentSeedCandidate: boolean = false;
 
+    /* Constructs a SeedCrackerLimb which will post messages to the given callback.
+     *
+     * The valid types of messages are:
+     *
+     *      number
+     * Will be a number between 0 and 1, indicating completion percentage
+     *
+     *      string
+     * Will be a 5-character string, which is a seed candidate
+     *
+     *      "done"
+     * If the iteration is done.
+     */
     constructor(postMessage: postMessageType) {
         this.postMessage = postMessage;
     }
 
+    /* Should be called with the data of a MessageEvent.
+     * Accepted data types:
+     *
+     *      { partCount: number, part: number }
+     * "Constructs" the object.
+     * The arguments have the same semantics as in SeedIterator.rangePartition.
+     *
+     *      FtHoFOutcome[]
+     * Sets (or replaces) the list of outcomes that seeds must be compatible with.
+     */
     onMessage(messageData: any) {
         if('partCount' in messageData && 'part' in messageData) {
             this.processConstructionMessage(+messageData.partCount, +messageData.part);
