@@ -157,7 +157,8 @@ test('SeedCrackerLimb aborts computation if two compatible seeds are found', () 
         expect(m).toEqual( {logicalTime: 21, seed: 'aaaaa'} );
     }).mockImplementationOnce((m: any) => {
         expect(m).toEqual( {logicalTime: 21, seed: 'aaaac'} );
-        expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(3);
+    }).mockImplementationOnce((m: any) => {
+        expect(m).toEqual( {logicalTime: 21, done: true} );
         isCompatibleWithAllMock.mockImplementation( () => fail("More calls happened") );
     });
 

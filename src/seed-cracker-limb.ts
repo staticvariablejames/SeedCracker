@@ -30,9 +30,10 @@
  * Should any matching seed be found, the seed itself is immediately sent back in a message.
  * If two matching seeds are found,
  * the limb sends the second seed, too, and halts computation.
- * If the search finishes,
- * the string "done" is sent as a message.
- * This message is sent if either one or no compatible seeds are found.
+ *
+ * Once the search finishes, a message { logicalTime: number, done: true } is sent.
+ * "Finishes" means either reaching the end of iteration after finding zero or one compatible seeds,
+ * or right after finding the second compatible seed.
  *
  * The limb periodically sends a "progress message":
  * a number between 0 and 1 representing the completion percentage.
@@ -153,6 +154,7 @@ export class SeedCrackerLimb {
                 this.postMessage( {logicalTime: this.logicalTime, seed: value} );
                 if(this.sentSeedCandidate) {
                     // Found a duplicate! Let's abandon ship, too
+                    this.postMessage( {logicalTime: this.logicalTime, done: true} );
                     return;
                 }
                 this.sentSeedCandidate = true;
