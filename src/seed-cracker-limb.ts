@@ -50,6 +50,17 @@ export class SeedCrackerLimb {
         this.outcomes = outcomeList;
         this.sentSeedCandidate = false;
         setTimeout(this.iterate.bind(this), 0);
+        /* Theoretically, there is a memory leak here:
+         * if processOutcomeListMessage is called while a setTimeout from iterate() is active,
+         * there will now be two active iterate() callbacks which will alternate execution,
+         * and will die together once the iteration ends.
+         *
+         * The iteration itself does not change
+         * (because we are resetting this.iterator here)
+         * but the callback stack increases by one.
+         * Hence, if outcomeLists keep coming,
+         * theoretically this could exhaust the memory.
+         */
     }
 
     // The control of the "state machine"
