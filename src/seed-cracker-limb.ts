@@ -13,7 +13,17 @@
  * with type { partCount: number, part: number }.
  * The semantics are the same as in SeedIterator.rangePartition.
  *
- * Afterwards, the limb expects only messages containing FtHoFOutcome arrays.
+ * Afterwards the limb expects "set/reset messages",
+ * which comprise a single number,
+ * and "computation messages",
+ * which contains an FtHoFOutcome array.
+ *
+ * The "set/reset message" is a single number which essentially represents a logical clock.
+ * Receiving this message halts whatever computation is being performed.
+ * Every message sent by this object has a 'time' attribute,
+ * which corresponds to the last number received in such a message.
+ *
+ * A "computation message" is a single FtHoFOutcome array.
  * Once such an array arrives,
  * the limb iterates through all seeds in its partition,
  * looking for seeds which are compatible with the outcome array.
@@ -27,16 +37,11 @@
  * The limb periodically sends a "progress message":
  * a number between 0 and 1 representing the completion percentage.
  *
- * If a new message arrives before the limb messages "done",
- * it will immediately halts the processing of the current list of outcomes,
- * but it is still possible for an outcome to be reported before the message arrives,
- * so SeedCracker should still filter incoming seed candidates.
+ * The limb assumes that between any two "computation messages", a "set/reset message" is sent.
  */
 import { FtHoFOutcome } from './fthof-outcome';
 import { isCompatibleWithAll } from './seed-outcome-compatibility';
 import { SeedIterator } from './seed-iterator';
-
-type postMessageType = (message: string | number) => void;
 
 // Helper
 function isOutcomeArray(value: any): value is FtHoFOutcome[] {
@@ -50,29 +55,31 @@ function isOutcomeArray(value: any): value is FtHoFOutcome[] {
 
 export class SeedCrackerLimb {
     static readonly step = 26*26;
-    private postMessage: postMessageType;
+    private postMessage: (m: any) => void;
     private partCount: number = 1;
     private part: number = 0;
 
     // Control the iteration
-    private iterator: SeedIterator = new SeedIterator(); // Dummy value, will be replaced onMessage
+    private iterator: SeedIterator = new SeedIterator(); // Dummy value
     private outcomes: FtHoFOutcome[] = [];
     private sentSeedCandidate: boolean = false;
+    private logicalTime: number = 0;
+    private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     /* Constructs a SeedCrackerLimb which will post messages to the given callback.
      *
      * The valid types of messages are:
      *
-     *      number
+     *      { logicalTime: number, progress: number }
      * Will be a number between 0 and 1, indicating completion percentage
      *
-     *      string
+     *      { logicalTime: number, seed: string }
      * Will be a 5-character string, which is a seed candidate
      *
-     *      "done"
+     *      { logicalTime: number, done: true }
      * If the iteration is done.
      */
-    constructor(postMessage: postMessageType) {
+    constructor(postMessage: (m: any) => void) {
         this.postMessage = postMessage;
     }
 
@@ -83,17 +90,29 @@ export class SeedCrackerLimb {
      * "Constructs" the object.
      * The arguments have the same semantics as in SeedIterator.rangePartition.
      *
+     *      number
+     * Sets the given number to be the new logical time and resets computation.
+     *
      *      FtHoFOutcome[]
      * Sets (or replaces) the list of outcomes that seeds must be compatible with.
      */
     onMessage(messageData: any) {
-        if('partCount' in messageData && 'part' in messageData) {
+        if(typeof messageData == 'number') {
+            this.processResetMessage(messageData);
+        } else if('partCount' in messageData && 'part' in messageData) {
             this.processConstructionMessage(+messageData.partCount, +messageData.part);
         } else if(isOutcomeArray(messageData)) {
             this.processOutcomeListMessage(messageData);
         } else {
             console.log("Error: wrong message data type received by SeedCrackerLimb.");
             return;
+        }
+    }
+
+    private processResetMessage(newLogicalTime: number) {
+        this.logicalTime = newLogicalTime;
+        if(this.timeoutId) {
+            clearTimeout(this.timeoutId);
         }
     }
 
@@ -106,7 +125,7 @@ export class SeedCrackerLimb {
         this.iterator = SeedIterator.rangePartition(this.partCount, this.part);
         this.outcomes = outcomeList;
         this.sentSeedCandidate = false;
-        setTimeout(this.iterate.bind(this), 0);
+        this.timeoutId = setTimeout(this.iterate.bind(this), 0);
         /* Theoretically, there is a memory leak here:
          * if processOutcomeListMessage is called while a setTimeout from iterate() is active,
          * there will now be two active iterate() callbacks which will alternate execution,
@@ -126,12 +145,12 @@ export class SeedCrackerLimb {
             let {value, done} = this.iterator.next();
             if(done) {
                 // We're done, send message and abandon ship
-                this.postMessage('done');
+                this.postMessage( {logicalTime: this.logicalTime, done: true} );
                 return;
             }
             if(isCompatibleWithAll(this.outcomes, value!)) {
                 // Found a candidate!
-                this.postMessage(value!);
+                this.postMessage( {logicalTime: this.logicalTime, seed: value} );
                 if(this.sentSeedCandidate) {
                     // Found a duplicate! Let's abandon ship, too
                     return;
@@ -141,7 +160,7 @@ export class SeedCrackerLimb {
         }
 
         // Not done in this step, prepare for next round
-        this.postMessage( this.iterator.progress() );
-        setTimeout(this.iterate.bind(this), 0);
+        this.postMessage( {logicalTime: this.logicalTime, progress: this.iterator.progress()} );
+        this.timeoutId = setTimeout(this.iterate.bind(this), 0);
     }
 }
