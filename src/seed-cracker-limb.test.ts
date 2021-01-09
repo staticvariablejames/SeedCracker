@@ -7,15 +7,17 @@ jest.mock('./seed-outcome-compatibility', () => (
     }
 ));
 
+jest.useFakeTimers();
+
 import { FtHoFOutcome } from './fthof-outcome';
 import { SeedCrackerLimb } from './seed-cracker-limb';
 
-test('SeedCrackerLimb basic functionality', done => {
+test('SeedCrackerLimb basic functionality', () => {
     let callback = jest.fn();
     let limb = new SeedCrackerLimb(callback);
     expect(callback).not.toHaveBeenCalled();
 
-    limb.onMessage({partCount: 26**3+1, part: 0});
+    limb.onMessage({partCount: 26**3+1, part: 0}); // Note uneven partition
     expect(callback).not.toHaveBeenCalled();
 
     let outcomeList = [new FtHoFOutcome()];
@@ -27,12 +29,13 @@ test('SeedCrackerLimb basic functionality', done => {
         expect(m).toEqual('aaaaa');
     }).mockImplementationOnce((m: any) => {
         expect(m).toEqual('done');
-        done();
     });
     limb.onMessage(outcomeList);
+    jest.runAllTimers();
+    expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(26**2 - 1); // Note uneven partition
 });
 
-test('SeedCrackerLimb reports completion', done => {
+test('SeedCrackerLimb reports completion', () => {
     let callback = jest.fn();
     let limb = new SeedCrackerLimb(callback);
     limb.onMessage({partCount: 26**3/2, part: 0});
@@ -53,13 +56,14 @@ test('SeedCrackerLimb reports completion', done => {
         expect(m).toBeCloseTo(1, 10);
     }).mockImplementationOnce((m: any) => {
         expect(m).toEqual('done');
-        expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(2*26**2); // Not a single extra call
-        done();
     });
+
     limb.onMessage(outcomeList);
+    jest.runAllTimers();
+    expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(2*26**2); // Not a single extra call
 });
 
-test('SeedCrackerLimb properly restarts computation if interrupted', done => {
+test('SeedCrackerLimb properly restarts computation if interrupted', () => {
     let callback = jest.fn();
     let limb = new SeedCrackerLimb(callback);
     limb.onMessage({partCount: 26**3/2, part: 0});
@@ -88,12 +92,14 @@ test('SeedCrackerLimb properly restarts computation if interrupted', done => {
         expect(m).toEqual('done');
         expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(3*26**2);
         isCompatibleWithAllMock.mockImplementation( () => fail("More calls happened") );
-        done();
     });
+
     limb.onMessage(outcomeList);
+    jest.runAllTimers();
+    expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(3*26**2);
 });
 
-test('SeedCrackerLimb aborts computation if two compatible seeds are found', done => {
+test('SeedCrackerLimb aborts computation if two compatible seeds are found', () => {
     let callback = jest.fn();
     let limb = new SeedCrackerLimb(callback);
     limb.onMessage({partCount: 26**3/2, part: 0});
@@ -110,7 +116,9 @@ test('SeedCrackerLimb aborts computation if two compatible seeds are found', don
         expect(m).toEqual('aaaac');
         expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(3);
         isCompatibleWithAllMock.mockImplementation( () => fail("More calls happened") );
-        done();
     });
+
     limb.onMessage(outcomeList);
+    jest.runAllTimers();
+    expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(3);
 });
