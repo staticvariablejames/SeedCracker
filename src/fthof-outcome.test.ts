@@ -23,3 +23,30 @@ test('FtHoFOutcome equality works', () => {
     outcome.season = otherOutcome.season = 'valentines';
     expect(outcome.equals(otherOutcome)).toBe(false);
 });
+
+test('FtHoFOutcome.fromObjec works', () => {
+    let outcome1 = new FtHoFOutcome(GCOutcome.Sweet, true, 42, 'valentines', 7);
+    let outcome2 = new FtHoFOutcome(GCOutcome.Sweet, true, 42, '');
+    let object = {...outcome1} as any;
+    expect(object instanceof FtHoFOutcome).toBe(false);
+    expect(FtHoFOutcome.fromObject(object) instanceof FtHoFOutcome).toBe(true);
+    expect(FtHoFOutcome.fromObject(object)).toEqual(outcome1);
+
+    object.backfire = 'true';
+    expect(FtHoFOutcome.fromObject(object)).toBe(null);
+    object.backfire = true;
+
+    object.season = 'not a season';
+    expect(FtHoFOutcome.fromObject(object)).toBe(null);
+    object.season = 'valentines';
+
+    object.seasonalVariantIndex = () => {};
+    expect(FtHoFOutcome.fromObject(object)).toBe(null);
+    object.seasonalVariantIndex = 0;
+
+    delete object.seasonalVariantIndex;
+    expect(FtHoFOutcome.fromObject(object)).toBe(null);
+    object.season = '';
+    expect(FtHoFOutcome.fromObject(object)).not.toBe(null);
+    expect(FtHoFOutcome.fromObject(object)!.equals(outcome2)).toBe(true);
+});
