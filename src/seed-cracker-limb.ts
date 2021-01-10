@@ -44,12 +44,17 @@ import { FtHoFOutcome } from './fthof-outcome';
 import { isCompatibleWithAll } from './seed-outcome-compatibility';
 import { SeedIterator } from './seed-iterator';
 
-// Helper
-function isOutcomeArray(value: any): value is FtHoFOutcome[] {
+/* If value is an array and every member of the array is convertible to FtHoFOutcome,
+ * this function converts it to a FtHoFOutcome and returns true.
+ * Otherwise, false is returned.
+ */
+function destructivelyCheckIfOutcomeArray(value: any): value is FtHoFOutcome[] {
     if(!Array.isArray(value)) return false;
-    for(let o of value) {
-        if(!(o instanceof FtHoFOutcome))
+    for(let i = 0; i < value.length; i++) {
+        value[i] = FtHoFOutcome.fromObject(value[i]);
+        if(value[i] === null) {
             return false;
+        }
     }
     return true;
 }
@@ -85,6 +90,7 @@ export class SeedCrackerLimb {
     }
 
     /* Should be called with the data of a MessageEvent.
+     * This object might change the message object.
      * Accepted data types:
      *
      *      { partCount: number, part: number }
@@ -96,16 +102,17 @@ export class SeedCrackerLimb {
      *
      *      FtHoFOutcome[]
      * Sets (or replaces) the list of outcomes that seeds must be compatible with.
+     * The message is also accepted if all members are convertible to FtHoFOutcome.
      */
     onMessage(messageData: any) {
         if(typeof messageData == 'number') {
             this.processResetMessage(messageData);
         } else if('partCount' in messageData && 'part' in messageData) {
             this.processConstructionMessage(+messageData.partCount, +messageData.part);
-        } else if(isOutcomeArray(messageData)) {
+        } else if(destructivelyCheckIfOutcomeArray(messageData)) {
             this.processOutcomeListMessage(messageData);
         } else {
-            console.log("Error: wrong message data type received by SeedCrackerLimb.");
+            console.log("Extraneous message: " + messageData);
             return;
         }
     }

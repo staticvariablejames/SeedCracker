@@ -11,6 +11,7 @@ jest.useFakeTimers();
 
 import { FtHoFOutcome } from './fthof-outcome';
 import { SeedCrackerLimb } from './seed-cracker-limb';
+import { GCOutcome } from './gcoutcome';
 
 test('SeedCrackerLimb basic functionality', () => {
     let callback = jest.fn();
@@ -166,4 +167,37 @@ test('SeedCrackerLimb aborts computation if two compatible seeds are found', () 
     limb.onMessage(outcomeList);
     jest.runAllTimers();
     expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(3);
+});
+
+test('SeedCrackerLimb still works with FtHoFOutcome-like objects', () => {
+    let callback = jest.fn();
+    let limb = new SeedCrackerLimb(callback);
+    expect(callback).not.toHaveBeenCalled();
+
+    limb.onMessage({partCount: 26**3+1, part: 0}); // Note uneven partition
+    expect(callback).not.toHaveBeenCalled();
+
+    let outcome = new FtHoFOutcome(GCOutcome.ClickFrenzy, false, 2, '');
+    let outcomeAsObject = {
+        gcOutcome: GCOutcome.ClickFrenzy,
+        backfire: false,
+        spellsCast: 2,
+        season: '',
+    };
+    let outcomeList = [outcomeAsObject]
+
+    isCompatibleWithAllMock.mockImplementation((list: FtHoFOutcome[], seed: string) => {
+        return list.length == 1 && list[0].equals(outcome) && seed == 'aaaaa';
+    });
+
+    callback.mockImplementationOnce((m: any) => {
+        expect(m).toEqual( {logicalTime: 17, seed: 'aaaaa'} );
+    }).mockImplementationOnce((m: any) => {
+        expect(m).toEqual( {logicalTime: 17, done: true} );
+    });
+
+    limb.onMessage(17);
+    limb.onMessage(outcomeList);
+    jest.runAllTimers();
+    expect(isCompatibleWithAllMock).toHaveBeenCalledTimes(26**2 - 1); // Note uneven partition
 });
