@@ -2,9 +2,12 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './src/main.ts',
+    entry: {
+        'main': './src/main.ts',
+        'seed-cracker.worker': './src/seed-cracker.worker.ts',
+    },
     output: {
-        filename: 'main.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
     },
     devtool: 'eval-source-map',
