@@ -1,31 +1,11 @@
 import { FtHoFOutcome } from './fthof-outcome';
+import { SeedCrackerWorker } from './seed-cracker-worker';
 
 export interface SeedCrackerCallback {
     notifyFailure(): void; // Called if no seed matches the outcomes
     notifyDuplicate(seeds: string[]): void; // Called if multiple seeds matches the outcomes
     notifySuccess(seed: string): void; // Called if a single seed matches the outcomes
     notifyProgress(percentage: number): void; // Called periodically
-}
-
-// Encapsulates the worker
-class SeedCrackerWorker {
-    private worker: Worker;
-
-    /* partCount and part have the same semantics as SeedIterator.rangePartition.
-     * boss is the object that should be called when the worker posts messages.
-     */
-    constructor(partCount: number, part: number, boss: SeedCracker) {
-        this.worker = new Worker('./dist/seed-cracker.worker.js');
-        this.worker.onmessage = (ev: MessageEvent) => boss.onMessage(part, ev.data);
-        this.worker.postMessage({partCount, part});
-    }
-
-    /* Sends a new message to the worker.
-     * See accepted message types in SeedCrackerLimb.
-     */
-    postMessage(m: FtHoFOutcome[] | number) {
-        this.worker.postMessage(m);
-    }
 }
 
 /* Creates an object that traverses through all seeds,
