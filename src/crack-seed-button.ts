@@ -7,7 +7,8 @@ export class CrackSeedButton implements SeedCrackerCallback {
     private button = document.getElementById('crack-seed-button') as HTMLButtonElement;
     private seedCracker: SeedCracker;
     private constructor() {
-        this.seedCracker = new SeedCracker(this);
+        let workers = Math.max(window.navigator.hardwareConcurrency, 1);
+        this.seedCracker = new SeedCracker(this, workers);
         this.button.addEventListener('click', () => {
             this.seedCracker.updateOutcomeList(OutcomeList.getOutcomes());
         });
@@ -28,8 +29,8 @@ export class CrackSeedButton implements SeedCrackerCallback {
     notifyProgress(progress: number) {
         this.div.textContent = `${Math.floor(progress*10000)/100}% seeds scanned...`;
     }
-    notifyDuplicate() {
-        this.div.textContent = `Multiple viable seeds.
+    notifyDuplicate(seeds: string[]) {
+        this.div.textContent = `Multiple viable seeds (like ${seeds[0]} and ${seeds[1]}).
             Cast FtHoF another time and click here again!`;
     }
 }

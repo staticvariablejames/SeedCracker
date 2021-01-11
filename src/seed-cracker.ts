@@ -1,79 +1,111 @@
 import { FtHoFOutcome } from './fthof-outcome';
-import { isCompatibleWithAll } from './seed-outcome-compatibility';
-import { SeedIterator } from './seed-iterator';
 
 export interface SeedCrackerCallback {
     notifyFailure(): void; // Called if no seed matches the outcomes
-    notifyDuplicate(): void; // Called if multiple seeds matches the outcomes
+    notifyDuplicate(seeds: string[]): void; // Called if multiple seeds matches the outcomes
     notifySuccess(seed: string): void; // Called if a single seed matches the outcomes
     notifyProgress(percentage: number): void; // Called periodically
+}
+
+// Encapsulates the worker
+class SeedCrackerWorker {
+    private worker: Worker;
+
+    /* partCount and part have the same semantics as SeedIterator.rangePartition.
+     * boss is the object that should be called when the worker posts messages.
+     */
+    constructor(partCount: number, part: number, boss: SeedCracker) {
+        this.worker = new Worker('./dist/seed-cracker.worker.js');
+        this.worker.onmessage = (ev: MessageEvent) => boss.onMessage(part, ev.data);
+        this.worker.postMessage({partCount, part});
+    }
+
+    /* Sends a new message to the worker.
+     * See accepted message types in SeedCrackerLimb.
+     */
+    postMessage(m: FtHoFOutcome[] | number) {
+        this.worker.postMessage(m);
+    }
 }
 
 /* Creates an object that traverses through all seeds,
  * looking for a seed that matches all the outcomes in outcomeList.
  */
 export class SeedCracker {
-    static readonly chunk = 26*26; // Do work in chunks of 26*26 seeds
-    private outcomeList: FtHoFOutcome[] = [];
-    private iterator: SeedIterator = new SeedIterator();
-    private candidateSeed: string = "";
-    timeoutID: number = 0;
+    private readonly workers: SeedCrackerWorker[];
+    private readonly callback: SeedCrackerCallback;
 
-    constructor(private callback: SeedCrackerCallback) {
-    }
+    // State machine control variables
+    private logicalTime: number = 0;
+    private pendingWorkers: number = 0; // Dummy value
+    private completionPercentage: number[] = []; // Dummy value
+    private seedCandidates: string[] = []; // Dummy value
 
-    private compatibleList(outcomeList: FtHoFOutcome[]) {
-        if(outcomeList.length < this.outcomeList.length)
-            return false;
-        for(let i = 0; i < this.outcomeList.length; i++) {
-            if(!this.outcomeList[i].equals(outcomeList[i]))
-                return false;
+    constructor(callback: SeedCrackerCallback, partCount: number) {
+        this.callback = callback;
+        this.workers = Array(partCount);
+        for(let i = 0; i < partCount; i++) {
+            this.workers[i] = new SeedCrackerWorker(partCount, i, this);
         }
-        return true;
     }
 
     updateOutcomeList(newOutcomeList: FtHoFOutcome[]) {
-        if(this.compatibleList(newOutcomeList)) {
-            // Great! All seeds discarded so far are indeed useless
-            if(!isCompatibleWithAll(newOutcomeList, this.candidateSeed))
-                this.candidateSeed = "";
+        this.logicalTime++;
+        this.pendingWorkers = this.workers.length;
+        this.completionPercentage = Array(this.workers.length).fill(0);
+        this.seedCandidates = [];
+        for(let worker of this.workers) {
+            worker.postMessage(this.logicalTime);
+            worker.postMessage(newOutcomeList);
+        }
+    }
+
+    onMessage(part: number, message: any) {
+        if(message.logicalTime != this.logicalTime) {
+            // Extraneous message from old iteration.
+            return;
+        } else if('done' in message) {
+            this.processCompletionMessage(part);
+        } else if('progress' in message) {
+            this.processProgressMessage(part, message.progress);
+        } else if('seed' in message) {
+            this.processSeedMessage(part, message.seed);
         } else {
-            // The work done so far has to be discarded
-            this.iterator = new SeedIterator();
-            this.candidateSeed = "";
+            console.log("Extraneous message: " + message);
         }
-
-        this.outcomeList = newOutcomeList;
-        this.scheduleWork();
     }
 
-    private scheduleWork() {
-        this.timeoutID = setTimeout(this.doWork.bind(this));
+    private processCompletionMessage(_: number) {
+        this.pendingWorkers--;
+        if(this.pendingWorkers > 0) return;
+
+        if(this.seedCandidates.length == 0) {
+            this.callback.notifyFailure();
+        } else if(this.seedCandidates.length == 1) {
+            this.callback.notifySuccess(this.seedCandidates[0]);
+        } else {
+            // Nothing to do, as the notifyDuplicate is sent in processSeedMessage.
+        }
     }
 
-    private doWork() {
-        for(let i = 0; i < SeedCracker.chunk; i++) {
-            let { value, done } = this.iterator.next();
-            if(done) {
-                if(this.candidateSeed == "") {
-                    this.callback.notifyFailure();
-                } else {
-                    this.callback.notifySuccess(this.candidateSeed);
-                }
-                return;
+    private processProgressMessage(part: number, percentage: number) {
+        this.completionPercentage[part] = percentage;
+        let progress = this.completionPercentage.reduce( (a, b) => a+b, 0 ) / this.workers.length;
+        this.callback.notifyProgress(progress);
+    }
+
+    private processSeedMessage(_: number, seed: string) {
+        this.seedCandidates.push(seed);
+
+        if(this.seedCandidates.length > 1) {
+            // Advance clock and clear workers
+            this.logicalTime++;
+            for(let worker of this.workers) {
+                worker.postMessage(this.logicalTime);
             }
-            let seed = value!;
-            if(isCompatibleWithAll(this.outcomeList, seed)) {
-                if(this.candidateSeed == "") {
-                    this.candidateSeed = seed;
-                } else {
-                    this.callback.notifyDuplicate();
-                    this.iterator.rewind();
-                    return;
-                }
-            }
+
+            // Notify the callback
+            this.callback.notifyDuplicate(this.seedCandidates);
         }
-        this.callback.notifyProgress( this.iterator.index() / (26**SeedIterator.n) );
-        this.scheduleWork();
     }
 }
