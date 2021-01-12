@@ -2,7 +2,6 @@
   "name": "ccseedcracker",
   "version": "0.1.0",
   "description": "External tool to extract Cookie Clicker's Game.seed",
-  "main": "dist/seed.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/staticvariablejames/SeedCracker.git"
