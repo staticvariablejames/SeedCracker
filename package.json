@@ -7,6 +7,8 @@
     "url": "https://github.com/staticvariablejames/SeedCracker.git"
   },
   "scripts": {
+    "build": "webpack",
+    "start": "webpack serve",
     "test": "jest --testNamePattern='^(?!.*\\[SLOW\\]).*$'",
     "test:all": "jest",
     "test:debug": "node --nolazy --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --verbose --colors"
