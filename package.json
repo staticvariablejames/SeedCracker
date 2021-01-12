@@ -7,7 +7,7 @@
     "url": "https://github.com/staticvariablejames/SeedCracker.git"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack.config.production.js",
     "start": "webpack serve",
     "test": "jest --testNamePattern='^(?!.*\\[SLOW\\]).*$'",
     "test:all": "jest",
