@@ -1,3 +1,14 @@
+Unit Tests vs Integration Tests
+===============================
+
+Unit tests for the classes/functions in `file.ts`
+are written in `file.test.ts`, in the same directory as `file.ts`.
+
+Integration tests also end with `.test.ts`,
+are placed in the `test/` directory,
+and require the server spawned by `npm start` to be active.
+
+
 [SLOW] tag for tests
 ====================
 
