@@ -29,3 +29,16 @@ Instead,
 the Javascript output (Webpacked, minified etc.)
 is available in the `gh-pages` branch.
 This keeps the diffs in the `master` branch clean.
+
+
+Cookie Clicker Webpage should be cached for testing
+===================================================
+
+Tests assume that a local copy of <https://orteil.dashnet.org/cookieclicker/>
+is available under the `cookieclicker/` subdirectory,
+so that, for example,
+the file `cookieclicker/img/icons.png` exists.
+
+This is because the integration tests redirect e.g. a request to
+<https://orteil.dashnet.org/cookieclicker/img/icons.png>
+to the local file 'cookieclicker/img/icons.png'.
