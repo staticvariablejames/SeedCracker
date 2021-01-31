@@ -12,7 +12,7 @@ beforeEach(async () => {
     page = await browser.newPage();
     await page.route('https://orteil.dashnet.org/**/*', route => {
         let path = route.request().url().replace('https://orteil.dashnet.org/', '');
-        route.fulfill({path});
+        route.fulfill({path: 'cache/' + path});
     });
 });
 afterEach(async () => {

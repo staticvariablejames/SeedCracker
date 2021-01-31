@@ -35,7 +35,7 @@ Cookie Clicker Webpage should be cached for testing
 ===================================================
 
 Tests assume that a local copy of <https://orteil.dashnet.org/cookieclicker/>
-is available under the `cookieclicker/` subdirectory,
+is available under the `cache/cookieclicker/` subdirectory,
 so that, for example,
 the file `cookieclicker/img/icons.png` exists.
 

@@ -11,7 +11,7 @@ let urls = [
     {url: 'cookieclicker/img/wrathCookie.png'},
 ];
 
-mkdirSync('cookieclicker/img/', {recursive: true});
+mkdirSync('cache/cookieclicker/img/', {recursive: true});
 
 setTimeout(async () => {
     let browser = await firefox.launch();
@@ -23,7 +23,7 @@ setTimeout(async () => {
         }
     })
     for(let {url} of urls) {
-        path = './' + url;
+        path = 'cache/' + url;
         await page.goto(baseURL + url);
     }
     await page.close();
