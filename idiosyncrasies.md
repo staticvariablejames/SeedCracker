@@ -42,3 +42,8 @@ the file `cookieclicker/img/icons.png` exists.
 This is because the integration tests redirect e.g. a request to
 <https://orteil.dashnet.org/cookieclicker/img/icons.png>
 to the local file 'cookieclicker/img/icons.png'.
+
+For convenience,
+the script `fetch-cookie-clicker-data` is defined in `package.json`.
+This script only downloads the needed files.
+Make sure to run `build-script` first!
