@@ -8,6 +8,8 @@
   },
   "scripts": {
     "build": "webpack --config webpack.config.production.js",
+    "build-script": "tsc script/fetch-cookie-clicker-data.ts --outDir dist",
+    "fetch-cookie-clicker-data": "node dist/fetch-cookie-clicker-data.js",
     "start": "webpack serve",
     "test": "jest --testNamePattern='^(?!.*\\[SLOW\\]).*$'",
     "test:all": "jest",
